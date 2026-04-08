@@ -21,6 +21,7 @@ public partial class MainWindow : Window
         _imageRecognizer = new SudokuImageRecognizer();
         BuildInputGrid();
         BuildOutputGrid();
+        AppLogger.Info("主窗口初始化完成");
     }
 
     private void BuildInputGrid()
@@ -185,8 +186,11 @@ public partial class MainWindow : Window
 
         if (picker.ShowDialog() != true)
         {
+            AppLogger.Info("用户取消了图片选择");
             return;
         }
+
+        AppLogger.Info($"开始识别图片: {picker.FileName}");
 
         try
         {
@@ -195,10 +199,12 @@ public partial class MainWindow : Window
             var board = await _imageRecognizer.RecognizeFromImageAsync(picker.FileName);
             FillInputBoard(board);
             ClearOutputBoard();
+            AppLogger.Info("图片识别完成并填入输入表格");
             StatusText.Text = "图片识别完成。请检查题目后点击“求解”。";
         }
         catch (Exception ex)
         {
+            AppLogger.Error("图片识别流程失败", ex);
             StatusText.Text = $"图片识别失败：{ex.Message}";
         }
         finally
@@ -209,11 +215,13 @@ public partial class MainWindow : Window
 
     private void SolveButton_Click(object sender, RoutedEventArgs e)
     {
+        AppLogger.Info("用户点击求解");
         var board = ReadInputBoard();
         _lastInput = SudokuSolver.CopyBoard(board);
 
         if (!SudokuValidator.ValidatePartial(board, out var partialError))
         {
+            AppLogger.Info($"输入校验失败: {partialError}");
             ClearOutputBoard();
             StatusText.Text = $"输入校验失败：{partialError}";
             return;
@@ -223,6 +231,7 @@ public partial class MainWindow : Window
         var solved = SudokuSolver.Solve(workingBoard);
         if (!solved)
         {
+            AppLogger.Info("求解失败: 无解");
             ClearOutputBoard();
             StatusText.Text = "该题无解，请检查输入题目。";
             return;
@@ -230,6 +239,7 @@ public partial class MainWindow : Window
 
         if (!SudokuValidator.ValidateComplete(workingBoard, out var completeError))
         {
+            AppLogger.Info($"结果校验失败: {completeError}");
             ClearOutputBoard();
             StatusText.Text = $"结果校验失败：{completeError}";
             return;
@@ -237,6 +247,7 @@ public partial class MainWindow : Window
 
         var hasMultipleSolutions = SudokuSolver.HasMultipleSolutions(board);
         FillOutputBoard(workingBoard, _lastInput);
+        AppLogger.Info($"求解成功，多解标记: {hasMultipleSolutions}");
         StatusText.Text = hasMultipleSolutions
             ? "求解完成：存在多解，当前展示其中一个有效解。"
             : "求解完成：已通过数独规则校验。";
@@ -254,6 +265,7 @@ public partial class MainWindow : Window
 
         _lastInput = new int[9, 9];
         ClearOutputBoard();
+        AppLogger.Info("用户清空输入与输出");
         StatusText.Text = "已清空，可重新输入题目。";
     }
 
