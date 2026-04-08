@@ -1,11 +1,15 @@
 namespace SudokuApp;
 
+/// <summary>
+/// 负责基于标准数独规则验证题盘与结果盘。
+/// </summary>
 public static class SudokuValidator
 {
     public static bool ValidatePartial(int[,] board, out string error)
     {
         error = string.Empty;
 
+        // 题目阶段允许空格，但已填写数字必须满足行、列、宫内不重复。
         for (var row = 0; row < 9; row++)
         {
             var seen = new bool[10];
@@ -88,6 +92,7 @@ public static class SudokuValidator
     {
         error = string.Empty;
 
+        // 结果阶段要求每个位置都是 1-9 的有效数字，且不能重复。
         for (var row = 0; row < 9; row++)
         {
             var seen = new bool[10];

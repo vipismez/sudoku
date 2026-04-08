@@ -1,5 +1,9 @@
 namespace SudokuApp;
 
+/// <summary>
+/// 负责数独求解与多解判定。
+/// 当前实现采用回溯搜索，并优先选择候选数最少的空格以减少搜索分支。
+/// </summary>
 public static class SudokuSolver
 {
     public static int[,] CopyBoard(int[,] board)
@@ -88,6 +92,7 @@ public static class SudokuSolver
         bestCandidates = new List<int>();
         var minCount = int.MaxValue;
 
+        // 选择候选数最少的空格，可以显著降低回溯树的宽度。
         for (var row = 0; row < 9; row++)
         {
             for (var col = 0; col < 9; col++)
@@ -119,6 +124,7 @@ public static class SudokuSolver
     {
         var used = new bool[10];
 
+        // 同时扫描行、列和 3x3 宫，汇总当前位置不能使用的数字。
         for (var i = 0; i < 9; i++)
         {
             if (board[row, i] != 0)

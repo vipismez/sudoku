@@ -3,12 +3,13 @@
 namespace SudokuApp;
 
 /// <summary>
-/// Interaction logic for App.xaml
+/// 应用入口，负责挂接全局异常日志。
 /// </summary>
 public partial class App : Application
 {
 	public App()
 	{
+		// 桌面应用异常如果没有统一收口，调试和问题复现会非常困难。
 		AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
 		DispatcherUnhandledException += AppOnDispatcherUnhandledException;
 		TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;

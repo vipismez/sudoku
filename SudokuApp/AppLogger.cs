@@ -3,6 +3,10 @@ using System.Text;
 
 namespace SudokuApp;
 
+/// <summary>
+/// 提供最小可用的文件日志能力，用于记录运行状态与异常。
+/// 日志写入失败时不会反向影响主流程。
+/// </summary>
 public static class AppLogger
 {
     private static readonly object SyncRoot = new();
@@ -30,6 +34,7 @@ public static class AppLogger
         {
             lock (SyncRoot)
             {
+                // 使用单文件追加写入，便于桌面应用快速排查问题。
                 Directory.CreateDirectory(LogDirectory);
                 var builder = new StringBuilder();
                 builder.Append('[')

@@ -24,7 +24,7 @@
                        FontSize="30"
                        FontWeight="Bold"
                        Foreground="#FF2A3B2E"/>
-            <TextBlock Text="支持图片识别与手动输入，结果展示前会进行数独规则验证。"
+            <TextBlock Text="使用数字输入题目，结果展示前会进行数独规则验证。"
                        Margin="0,8,0,0"
                        Foreground="#FF4B5A50"
                        FontSize="14"/>
@@ -33,15 +33,9 @@
         <Border Grid.Row="1"
                 Margin="0,16,0,16"
                 Padding="12"
-                Background="#FFF0EBDD"
+            Background="#FFF2EEE3"
                 CornerRadius="10">
             <WrapPanel VerticalAlignment="Center">
-                <Button x:Name="UploadImageButton"
-                        Content="上传数独图片"
-                        Width="140"
-                        Height="36"
-                        Margin="0,0,10,0"
-                        Click="UploadImageButton_Click"/>
                 <Button x:Name="SolveButton"
                         Content="求解"
                         Width="100"
@@ -64,12 +58,12 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
-                    Background="White"
+                    Background="#FFFFFCF6"
                     CornerRadius="12"
                     Padding="16">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top"
-                               Text="题目输入（可手动修改识别结果）"
+                               Text="题目输入"
                                FontWeight="SemiBold"
                                FontSize="16"
                                Margin="0,0,0,12"
@@ -79,7 +73,7 @@
             </Border>
 
             <Border Grid.Column="2"
-                    Background="White"
+                    Background="#FFFFFCF6"
                     CornerRadius="12"
                     Padding="16">
                 <DockPanel>
@@ -98,9 +92,9 @@
                 Margin="0,16,0,0"
                 Padding="12"
                 CornerRadius="10"
-                Background="#FFE9F3E9">
+                Background="#FFEBF4ED">
             <TextBlock x:Name="StatusText"
-                       Text="就绪：请输入题目或上传图片。"
+                       Text="就绪：请输入题目。"
                        Foreground="#FF1F4A31"
                        FontSize="14"/>
         </Border>
