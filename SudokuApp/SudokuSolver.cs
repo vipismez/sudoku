@@ -1,11 +1,22 @@
 namespace SudokuApp;
 
+public enum SudokuSolveStepType
+{
+    Fill,
+    Backtrack
+}
+
+public readonly record struct SudokuSolveStep(int Row, int Col, int Value, SudokuSolveStepType StepType);
+
 /// <summary>
 /// 负责数独求解与多解判定。
 /// 当前实现采用回溯搜索，并优先选择候选数最少的空格以减少搜索分支。
 /// </summary>
 public static class SudokuSolver
 {
+    /// <summary>
+    /// 深拷贝棋盘，避免在求解、预览或多解检测时污染原始输入。
+    /// </summary>
     public static int[,] CopyBoard(int[,] board)
     {
         var copy = new int[9, 9];
@@ -20,11 +31,26 @@ public static class SudokuSolver
         return copy;
     }
 
+    /// <summary>
+    /// 直接求解，不记录步骤。
+    /// </summary>
     public static bool Solve(int[,] board)
     {
-        return SolveInternal(board);
+        return SolveInternal(board, null);
     }
 
+    /// <summary>
+    /// 求解并输出填入/回溯步骤，供 UI 动画播放与手动步进使用。
+    /// </summary>
+    public static bool SolveWithSteps(int[,] board, out List<SudokuSolveStep> steps)
+    {
+        steps = new List<SudokuSolveStep>();
+        return SolveInternal(board, steps);
+    }
+
+    /// <summary>
+    /// 判断题目是否存在多个有效解。
+    /// </summary>
     public static bool HasMultipleSolutions(int[,] board)
     {
         var copy = CopyBoard(board);
@@ -32,7 +58,10 @@ public static class SudokuSolver
         return count > 1;
     }
 
-    private static bool SolveInternal(int[,] board)
+    /// <summary>
+    /// 回溯主流程：基于 MRV 选择空格，按候选逐个试填并在失败时回退。
+    /// </summary>
+    private static bool SolveInternal(int[,] board, List<SudokuSolveStep>? steps)
     {
         if (!FindBestEmptyCell(board, out var row, out var col, out var candidates))
         {
@@ -47,16 +76,24 @@ public static class SudokuSolver
         foreach (var candidate in candidates)
         {
             board[row, col] = candidate;
-            if (SolveInternal(board))
+            steps?.Add(new SudokuSolveStep(row, col, candidate, SudokuSolveStepType.Fill));
+
+            if (SolveInternal(board, steps))
             {
                 return true;
             }
+
             board[row, col] = 0;
+            steps?.Add(new SudokuSolveStep(row, col, candidate, SudokuSolveStepType.Backtrack));
         }
 
         return false;
     }
 
+    /// <summary>
+    /// 统计解数量，并在达到 limit 时提前停止。
+    /// 该方法用于多解检测，不追求返回全部解的精确总数。
+    /// </summary>
     private static int CountSolutions(int[,] board, int limit)
     {
         if (!FindBestEmptyCell(board, out var row, out var col, out var candidates))
@@ -85,6 +122,10 @@ public static class SudokuSolver
         return total;
     }
 
+    /// <summary>
+    /// 找到候选数最少的空格（MRV）。
+    /// 返回 false 表示不存在空格，即当前棋盘已填满。
+    /// </summary>
     private static bool FindBestEmptyCell(int[,] board, out int bestRow, out int bestCol, out List<int> bestCandidates)
     {
         bestRow = -1;
@@ -120,6 +161,9 @@ public static class SudokuSolver
         return bestRow != -1;
     }
 
+    /// <summary>
+    /// 计算指定空格的所有合法候选值。
+    /// </summary>
     private static List<int> GetCandidates(int[,] board, int row, int col)
     {
         var used = new bool[10];

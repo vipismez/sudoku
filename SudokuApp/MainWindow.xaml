@@ -5,18 +5,115 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="数独解题程序"
-        Height="760"
-        Width="1100"
-        MinHeight="700"
-        MinWidth="980"
+                Height="860"
+                Width="1360"
+                MinHeight="760"
+                MinWidth="1180"
         WindowStartupLocation="CenterScreen"
         Background="#FFF7F5EF">
+    <Window.Resources>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF2C6840"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#FF1E4D2E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF38824F"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1E4D2E"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#FFADC8B7"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DefaultButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FFEAE6DC"/>
+            <Setter Property="Foreground" Value="#FF2E3D38"/>
+            <Setter Property="BorderBrush" Value="#FFCAC5BC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFD8D4CA"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFCAC6BC"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#FFF2F0EA"/>
+                                <Setter Property="Foreground" Value="#FFAAB0A8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DangerButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FFFCEEEC"/>
+            <Setter Property="Foreground" Value="#FF8B3C3C"/>
+            <Setter Property="BorderBrush" Value="#FFE0B6B3"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFF8E3E0"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFF0D4D0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#FFFAF5F5"/>
+                                <Setter Property="Foreground" Value="#FFCCA8A6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical">
@@ -24,79 +121,238 @@
                        FontSize="30"
                        FontWeight="Bold"
                        Foreground="#FF2A3B2E"/>
-            <TextBlock Text="使用数字输入题目，结果展示前会进行数独规则验证。"
+            <TextBlock Text="支持手动输入、分档出题与解题过程演示，结果展示前会进行数独规则验证。"
                        Margin="0,8,0,0"
                        Foreground="#FF4B5A50"
                        FontSize="14"/>
         </StackPanel>
 
-        <Border Grid.Row="1"
-                Margin="0,16,0,16"
-                Padding="12"
-            Background="#FFF2EEE3"
-                CornerRadius="10">
-            <WrapPanel VerticalAlignment="Center">
-                <Button x:Name="SolveButton"
-                        Content="求解"
-                        Width="100"
-                        Height="36"
-                        Margin="0,0,10,0"
-                        Click="SolveButton_Click"/>
-                <Button x:Name="ClearButton"
-                        Content="清空"
-                        Width="100"
-                        Height="36"
-                        Click="ClearButton_Click"/>
-            </WrapPanel>
-        </Border>
-
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1" Margin="0,18,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="360"/>
+                <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0"
-                    Background="#FFFFFCF6"
-                    CornerRadius="12"
-                    Padding="16">
-                <DockPanel>
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="题目输入"
-                               FontWeight="SemiBold"
-                               FontSize="16"
-                               Margin="0,0,0,12"
-                               Foreground="#FF263A33"/>
-                    <UniformGrid x:Name="InputGrid" Rows="9" Columns="9"/>
-                </DockPanel>
-            </Border>
+            <ScrollViewer Grid.Column="0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <Border Padding="16"
+                            Background="#FFF2EEE3"
+                            CornerRadius="12">
+                        <StackPanel>
+                            <TextBlock Text="操作面板"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF263A33"/>
+                            <TextBlock Text="出题、求解与过程控制都集中在这里。"
+                                       Margin="0,6,0,14"
+                                       Foreground="#FF5A665C"
+                                       FontSize="12"/>
+
+                        <Border Padding="14"
+                            Background="#FFF8F3E7"
+                            CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock Text="求解控制"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="#FF263A33"/>
+                            <TextBlock Text="控制自动演示、手动步进和结果完成。"
+                                   Margin="0,4,0,12"
+                                   Foreground="#FF6A756C"
+                                   FontSize="12"/>
+                            <UniformGrid Columns="2">
+                            <Button x:Name="SolveButton"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Content="求解"
+                                Height="40"
+                                Margin="0,0,10,10"
+                                Click="SolveButton_Click"/>
+                            <Button x:Name="PauseResumeButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="暂停"
+                                Height="40"
+                                Margin="0,0,0,10"
+                                IsEnabled="False"
+                                Click="PauseResumeButton_Click"/>
+                            <Button x:Name="StopButton"
+                                Style="{StaticResource DangerButtonStyle}"
+                                Content="停止"
+                                Height="40"
+                                Margin="0,0,10,10"
+                                IsEnabled="False"
+                                Click="StopButton_Click"/>
+                            <Button x:Name="RestartButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="重新开始"
+                                Height="40"
+                                Margin="0,0,0,10"
+                                IsEnabled="False"
+                                Click="RestartButton_Click"/>
+                            <Button x:Name="PreviousStepButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="上一步"
+                                Height="40"
+                                Margin="0,0,10,10"
+                                IsEnabled="False"
+                                Click="PreviousStepButton_Click"/>
+                            <Button x:Name="NextStepButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="下一步"
+                                Height="40"
+                                Margin="0,0,0,10"
+                                IsEnabled="False"
+                                Click="NextStepButton_Click"/>
+                            <Button x:Name="CompleteNowButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="直接完成"
+                                Height="40"
+                                Margin="0,0,10,10"
+                                IsEnabled="False"
+                                Click="CompleteNowButton_Click"/>
+                            <Button x:Name="ClearButton"
+                                Style="{StaticResource DangerButtonStyle}"
+                                Content="清空"
+                                Height="40"
+                                Margin="0,0,0,10"
+                                Click="ClearButton_Click"/>
+                            </UniformGrid>
+                        </StackPanel>
+                        </Border>
+
+                        <Border Margin="0,14,0,0"
+                            Padding="14"
+                            Background="#FFEEF5ED"
+                            CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock Text="快速出题"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="#FF263A33"/>
+                            <TextBlock Text="按难度生成新题，生成后可直接求解或继续手动修改。"
+                                   Margin="0,4,0,12"
+                                   Foreground="#FF6A756C"
+                                   FontSize="12"/>
+                            <UniformGrid Columns="3">
+                            <Button x:Name="GenerateEasyButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="容易"
+                                Height="40"
+                                Margin="0,0,10,0"
+                                Click="GenerateEasyButton_Click"/>
+                            <Button x:Name="GenerateMediumButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="中等"
+                                Height="40"
+                                Margin="0,0,10,0"
+                                Click="GenerateMediumButton_Click"/>
+                            <Button x:Name="GenerateHardButton"
+                                Style="{StaticResource DefaultButtonStyle}"
+                                Content="困难"
+                                Height="40"
+                                Click="GenerateHardButton_Click"/>
+                            </UniformGrid>
+                        </StackPanel>
+                        </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,16,0,0"
+                            Padding="16"
+                            Background="#FFF5F1E7"
+                            CornerRadius="12">
+                        <StackPanel>
+                            <TextBlock Text="过程信息"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF263A33"/>
+                            <TextBlock x:Name="PuzzleStatsText"
+                                       Text="题目统计：尚未生成或求解。"
+                                       Margin="0,12,0,0"
+                                       Foreground="#FF5A665C"
+                                       FontSize="12"/>
+                            <TextBlock x:Name="PlaybackSummaryText"
+                                       Text="过程统计：等待开始。"
+                                       Margin="0,6,0,0"
+                                       Foreground="#FF5A665C"
+                                       FontSize="12"/>
+                            <TextBlock x:Name="StatusText"
+                                       Text="就绪：请输入题目。"
+                                       Margin="0,6,0,0"
+                                       Foreground="#FF1F4A31"
+                                       FontSize="13"
+                                       TextWrapping="Wrap"/>
+                            <ProgressBar x:Name="PlaybackProgressBar"
+                                         Margin="0,12,0,0"
+                                         Height="10"
+                                         Minimum="0"
+                                         Maximum="1"
+                                         Value="0"
+                                         Foreground="#FF5F8E68"
+                                         Background="#FFE6E2D8"/>
+                            <TextBlock x:Name="PlaybackProgressText"
+                                       Text="播放进度：0 / 0"
+                                       Margin="0,8,0,0"
+                                       Foreground="#FF4F5E54"
+                                       FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
 
             <Border Grid.Column="2"
+                    x:Name="BoardBorderPanel"
                     Background="#FFFFFCF6"
+                    BorderBrush="#FFE8E4DA"
+                    BorderThickness="2"
                     CornerRadius="12"
-                    Padding="16">
-                <DockPanel>
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="答案表格（9x9）"
-                               FontWeight="SemiBold"
-                               FontSize="16"
-                               Margin="0,0,0,12"
-                               Foreground="#FF263A33"/>
-                    <UniformGrid x:Name="OutputGrid" Rows="9" Columns="9"/>
-                </DockPanel>
+                    Padding="18">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,14">
+                        <DockPanel LastChildFill="False">
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="数独棋盘（输入 / 演示 / 结果）"
+                                       FontWeight="SemiBold"
+                                       FontSize="18"
+                                       Foreground="#FF263A33"/>
+                            <Border DockPanel.Dock="Right"
+                                    x:Name="BoardModeBadge"
+                                    Padding="10,4"
+                                    CornerRadius="999"
+                                    Background="#FFE8EFE3">
+                                <TextBlock x:Name="BoardModeText"
+                                           Text="编辑模式"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF2E5A3A"/>
+                            </Border>
+                        </DockPanel>
+                        <TextBlock Text="棋盘已放大到主视区，开始求解后会直接在这里展示填数、回溯与最终答案。"
+                                   Margin="0,6,0,0"
+                                   Foreground="#FF5A665C"
+                                   FontSize="12"/>
+                    </StackPanel>
+
+                    <Viewbox Grid.Row="1"
+                             Stretch="Uniform"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center">
+                        <UniformGrid x:Name="InputGrid"
+                                     Rows="9"
+                                     Columns="9"
+                                     Width="720"
+                                     Height="720"/>
+                    </Viewbox>
+                </Grid>
             </Border>
         </Grid>
-
-        <Border Grid.Row="3"
-                Margin="0,16,0,0"
-                Padding="12"
-                CornerRadius="10"
-                Background="#FFEBF4ED">
-            <TextBlock x:Name="StatusText"
-                       Text="就绪：请输入题目。"
-                       Foreground="#FF1F4A31"
-                       FontSize="14"/>
-        </Border>
     </Grid>
 </Window>

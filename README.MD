@@ -1,39 +1,37 @@
 # SudokuApp
 
-一个基于 C#、.NET 8 和 WPF 的 9x9 数独桌面程序，当前版本聚焦于纯手动输入、规则校验、求解和结果展示。
+一个基于 C#、.NET 8 和 WPF 的 9x9 数独桌面程序。
+当前版本聚焦于“手动录入 + 难度出题 + 动态演示求解过程 + 结果校验”的完整闭环。
 
-## 当前功能
+## 功能概览
 
-- 9x9 数独手动输入
-- 输入阶段实时冲突高亮
-- 基于标准数独规则的题盘校验
-- 数独自动求解
-- 结果展示区区分原题数字与补全数字
-- 多解题提示
+- 单棋盘模式：输入、演示、结果都在同一棋盘中完成
+- 手动输入与即时冲突高亮（行、列、3x3 宫）
+- 快速出题：容易 / 中等 / 困难
+- 求解过程播放控制：暂停、继续、停止、重新开始、上一步、下一步、直接完成
+- 过程统计：线索数、空格数、预计步数、当前步进度
+- 模式提示：编辑模式 / 演示模式 / 暂停模式 / 结果模式 / 完成模式
+- 多解检测提示（展示其中一个有效解）
 - 本地日志记录
 
-## 当前不包含的功能
+## 不包含的功能
 
 - 图片上传
 - OCR 识别
 
-这两项已经从当前版本中移除，项目现在只保留手动录入数独的主流程。
-
-## 开发环境
+## 技术栈
 
 - Windows
 - .NET SDK 8.0+
 - WPF
 
-如果本机没有把 dotnet 加入 PATH，可以直接使用完整路径运行，例如：
+## 构建与运行
+
+在仓库根目录执行：
 
 ```powershell
 C:\Users\vipis\.dotnet\dotnet.exe build .\SudokuApp.sln -c Release
 ```
-
-## 运行方式
-
-在项目根目录执行：
 
 ```powershell
 C:\Users\vipis\.dotnet\dotnet.exe run --project .\SudokuApp\SudokuApp.csproj
@@ -41,31 +39,34 @@ C:\Users\vipis\.dotnet\dotnet.exe run --project .\SudokuApp\SudokuApp.csproj
 
 也可以直接打开 [SudokuApp.sln](SudokuApp.sln) 用 Visual Studio 运行。
 
+## 使用流程
+
+1. 手动输入题目，或点击“容易 / 中等 / 困难”生成新题。
+2. 检查左侧过程信息中的题目统计与预计演示步数。
+3. 点击“求解”开始自动演示；可随时暂停并手动步进。
+4. 演示结束后查看最终结果与状态提示。
+
+## 求解思路（简述）
+
+- 先做输入合法性校验，避免无效盘面进入搜索。
+- 使用 MRV（最少候选数优先）回溯算法求解。
+- 同步记录 Fill / Backtrack 步骤，用于动画回放与手动步进。
+- 求解完成后做完整规则校验，并给出多解提示。
+
 ## 项目结构
 
-- [SudokuApp/MainWindow.xaml](SudokuApp/MainWindow.xaml)：主界面布局
-- [SudokuApp/MainWindow.xaml.cs](SudokuApp/MainWindow.xaml.cs)：输入交互、冲突高亮、求解流程
-- [SudokuApp/SudokuSolver.cs](SudokuApp/SudokuSolver.cs)：回溯求解器与多解判定
-- [SudokuApp/SudokuValidator.cs](SudokuApp/SudokuValidator.cs)：数独规则校验
+- [SudokuApp/MainWindow.xaml](SudokuApp/MainWindow.xaml)：主界面布局与控件命名
+- [SudokuApp/MainWindow.xaml.cs](SudokuApp/MainWindow.xaml.cs)：输入交互、播放状态机、UI 刷新逻辑
+- [SudokuApp/SudokuSolver.cs](SudokuApp/SudokuSolver.cs)：MRV 回溯求解、步骤记录、多解判定
+- [SudokuApp/SudokuGenerator.cs](SudokuApp/SudokuGenerator.cs)：分档出题与唯一解约束
+- [SudokuApp/SudokuValidator.cs](SudokuApp/SudokuValidator.cs)：局部/完整数独规则校验
 - [SudokuApp/AppLogger.cs](SudokuApp/AppLogger.cs)：日志记录
 - [SudokuApp/App.xaml.cs](SudokuApp/App.xaml.cs)：应用入口与全局异常处理
 
-## 使用说明
-
-1. 在左侧题盘中输入已知数字。
-2. 如果输入造成行、列或 3x3 宫冲突，相关格子会即时高亮。
-3. 点击“求解”后，程序会先校验题盘，再进行求解。
-4. 只有结果通过完整规则校验后，才会在右侧答案区展示。
-
 ## 日志位置
 
-运行日志默认写入：
+默认写入：
 
 ```text
 C:\Users\vipis\AppData\Local\SudokuApp\logs\app.log
 ```
-
-## 说明
-
-- 求解算法采用回溯搜索，并优先选择候选数最少的空格，以减少搜索分支。
-- 结果展示前会再次执行完整规则校验，避免错误结果被展示。
